@@ -1,0 +1,22 @@
+{
+  "extends": [
+    "rxjs-tslint-rules",
+    "tslint:recommended",
+    "tslint-react",
+    "tslint-config-prettier"
+  ],
+  "rules": {
+    "interface-name": [true, "never-prefix"],
+    "jsx-boolean-value": [true, "never"],
+    "ordered-imports": [false],
+    "rxjs-no-add": { "severity": "error" },
+    "rxjs-no-operator": [true, "never-prefix"],
+    "rxjs-no-patched": [true, "never-prefix"],
+    "no-empty-interface": [false],
+    "object-literal-sort-keys": [false],
+    "jsx-no-lambda": [false]
+  },
+  "linterOptions": {
+    "exclude": ["config/**/*.js", "node_modules/**/*.ts"]
+  }
+}
