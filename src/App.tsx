@@ -2,18 +2,32 @@ import React, { useEffect, useReducer } from "react";
 import { getTeams, getPlayers, getGames } from "./Api";
 import { Header } from "./Components";
 import Pages from "./Pages";
+import { message } from "antd";
 
 import { AppContextProvider } from "./Context";
+import { removeInvalidGames } from "./Utils";
 
 import { AppContext, Team, Player, Game } from "./Types";
 
-import "./App.css";
-
-const initialState: AppContext = {
+export const initialState: AppContext = {
   teams: [],
   players: [],
-  games: []
+  games: [],
+  loadingTeams: false,
+  loadingPlayers: false,
+  loadingGames: false
 };
+
+import "./App.css";
+
+// enum actions {
+//   SET_TEAMS = 'football-statistics/SET_TEAMS',
+//   SET_PLAYERS = 'football-statistics/SET_PLAYERS',
+//   SET_GAMES = 'football-statistics/SET_GAMES',
+//   SET_IS_LOADING_TEAMS = 'football-statistics/SET_IS_LOADING_TEAMS',
+//   SET_LOAD_PLAYERS = 'football-statistics/SET_LOAD_PLAYERS',
+//   SET_IS_LOADING_GAMES = 'football-statistics/SET_IS_LOADING_GAMES',
+// }
 
 type SetTeamsAction = {
   type: "SET_TEAMS";
@@ -30,19 +44,49 @@ type SetGamesAction = {
   games: Game[];
 };
 
+type LoadTeamsAction = {
+  type: "SET_IS_LOADING_TEAMS";
+  isLoading: boolean;
+};
+
+type LoadPlayersAction = {
+  type: "SET_LOAD_PLAYERS";
+  isLoading: boolean;
+};
+
+type LoadGamesAction = {
+  type: "SET_IS_LOADING_GAMES";
+  isLoading: boolean;
+};
+
 const reducer = (
   state: AppContext,
-  action: SetTeamsAction | SetPlayersAction | SetGamesAction
+  action:
+    | SetTeamsAction
+    | SetPlayersAction
+    | SetGamesAction
+    | LoadTeamsAction
+    | LoadPlayersAction
+    | LoadGamesAction
 ) => {
   switch (action.type) {
     case "SET_TEAMS": {
-      return { ...state, teams: action.teams };
+      return { ...state, teams: action.teams, loadingTeams: false };
     }
     case "SET_PLAYERS": {
-      return { ...state, players: action.players };
+      return { ...state, players: action.players, loadingPlayers: false };
     }
     case "SET_GAMES": {
-      return { ...state, games: action.games };
+      return { ...state, games: action.games, loadingGames: false };
+    }
+    case "SET_IS_LOADING_TEAMS": {
+      return { ...state, loadingTeams: action.isLoading };
+    }
+    case "SET_LOAD_PLAYERS": {
+      return { ...state, loadingTeams: action.isLoading };
+    }
+    case "SET_IS_LOADING_GAMES": {
+      return { ...state, loadingTeams: action.isLoading };
     }
     default: {
       return state;
@@ -57,16 +101,43 @@ const App = () => {
     fetchAllData();
   }, []);
 
+  const fetchTeams = async () => {
+    dispatch({ type: "SET_IS_LOADING_TEAMS", isLoading: true });
+    const response = await getTeams();
+    if (response.success) {
+      dispatch({ type: "SET_TEAMS", teams: response.data });
+    } else {
+      dispatch({ type: "SET_IS_LOADING_TEAMS", isLoading: false });
+      message.error(`There was a problem fetching the teams`);
+    }
+  };
+
+  const fetchPlayers = async () => {
+    dispatch({ type: "SET_LOAD_PLAYERS", isLoading: true });
+    const response = await getPlayers();
+    if (response.success) {
+      dispatch({ type: "SET_PLAYERS", players: response.data });
+    } else {
+      dispatch({ type: "SET_LOAD_PLAYERS", isLoading: false });
+      message.error(`There was a problem fetching the players`);
+    }
+  };
+
+  const fetchGames = async () => {
+    dispatch({ type: "SET_IS_LOADING_GAMES", isLoading: true });
+    const response = await getGames();
+    if (response.success) {
+      dispatch({ type: "SET_GAMES", games: removeInvalidGames(response.data) });
+    } else {
+      dispatch({ type: "SET_IS_LOADING_GAMES", isLoading: false });
+      message.error(`There was a problem fetching the games`);
+    }
+  };
+
   const fetchAllData = () => {
-    getTeams().then(data => {
-      dispatch({ type: "SET_TEAMS", teams: data });
-    });
-    getPlayers().then(data => {
-      dispatch({ type: "SET_PLAYERS", players: data });
-    });
-    getGames().then(data => {
-      dispatch({ type: "SET_GAMES", games: data });
-    });
+    fetchTeams();
+    fetchPlayers();
+    fetchGames();
   };
 
   return (

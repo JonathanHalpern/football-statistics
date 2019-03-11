@@ -1,5 +1,5 @@
 import React, { FC } from "react";
-import { Table, Logo, NameWithLogo } from "../Components";
+import { Table, NameWithLogo, Currency } from "../Components";
 
 import { Team } from "../Types";
 
@@ -17,6 +17,11 @@ const columns = [
     )
   },
   {
+    title: "Points",
+    dataIndex: "points",
+    sorter: (a: Team, b: Team) => Number(a.points) - Number(b.points)
+  },
+  {
     title: "City",
     dataIndex: "city",
     sorter: (a: Team, b: Team) => (a.city > b.city ? 1 : -1)
@@ -24,7 +29,9 @@ const columns = [
   {
     title: "Budget",
     dataIndex: "budget",
-    sorter: (a: Team, b: Team) => Number(a.budget) - Number(b.budget)
+    sorter: (a: Team, b: Team) => Number(a.budget) - Number(b.budget),
+    render: (text: string) =>
+      !text || Number(text) === 0 ? "Unknown" : <Currency value={text} />
   },
   {
     title: "Founded",

@@ -19,7 +19,7 @@ const columns = [
   {
     title: "Nationality",
     dataIndex: "nationality",
-    sorter: (a: Player, b: Player) => (a.name > b.name ? 1 : -1)
+    sorter: (a: Player, b: Player) => (a.nationality > b.nationality ? 1 : -1)
   },
   {
     title: "Age",
@@ -29,13 +29,14 @@ const columns = [
   {
     title: "Position",
     dataIndex: "position",
-    sorter: (a: Player, b: Player) => (a.name > b.name ? 1 : -1)
+    sorter: (a: Player, b: Player) => (a.position > b.position ? 1 : -1)
   },
   {
     title: "Value",
     dataIndex: "value",
-    sorter: (a: Player, b: Player) => Number(a.age) - Number(b.age),
-    render: (text: string) => <Currency value={text} />
+    sorter: (a: Player, b: Player) => Number(a.value) - Number(b.value),
+    render: (text: string) =>
+      !text || Number(text) === 0 ? "Unknown" : <Currency value={text} />
   }
 ];
 

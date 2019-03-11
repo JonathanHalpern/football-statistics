@@ -1,5 +1,6 @@
 import React, { FC, useState, SyntheticEvent } from "react";
 import moment from "moment";
+import styled from "@emotion/styled";
 import { useFetchAll } from "../Context";
 import { addAGame } from "../Api";
 import { Team } from "../Types";
@@ -11,6 +12,23 @@ const Option = Select.Option;
 
 type Props = {
   teams: Team[];
+};
+
+const Container = styled.div`
+  .ant-form-item-control-wrapper {
+    /* display: inline-block; */
+  }
+`;
+
+const formItemLayout = {
+  labelCol: {
+    xs: { span: 24 },
+    sm: { span: 8 }
+  },
+  wrapperCol: {
+    xs: { span: 24 },
+    sm: { span: 16 }
+  }
 };
 
 const AddGame: FC<Props> = ({ teams }) => {
@@ -30,7 +48,6 @@ const AddGame: FC<Props> = ({ teams }) => {
       team_two_goals
     };
     const response = await addAGame(game);
-    console.log(response);
     if (response.success) {
       fetchAll();
       updateTeamOneId("");
@@ -47,85 +64,88 @@ const AddGame: FC<Props> = ({ teams }) => {
   const disabledDate = (current: moment.Moment | undefined) =>
     current ? current.isAfter() : false;
   return (
-    <Form layout="horizontal" onSubmit={onSubmit}>
-      <p>Add a Game</p>
+    <Container>
+      <Form layout="horizontal" onSubmit={onSubmit} {...formItemLayout}>
+        <h2>Add a new game</h2>
 
-      <FormItem label="Match Date">
-        <DatePicker
-          disabledDate={disabledDate}
-          value={momentDate}
-          onChange={newDate => {
-            (!newDate || (newDate && newDate.isSameOrBefore())) &&
-              updateMomentDate(newDate);
-          }}
-        />
-      </FormItem>
-      <FormItem label="Home Team">
-        <Select
-          value={team_one_id}
-          style={{ width: 200 }}
-          onChange={newId => {
-            updateTeamOneId(newId);
-          }}
+        <FormItem label="Match Date">
+          <DatePicker
+            disabledDate={disabledDate}
+            value={momentDate}
+            style={{ width: 200 }}
+            onChange={newDate => {
+              (!newDate || (newDate && newDate.isSameOrBefore())) &&
+                updateMomentDate(newDate);
+            }}
+          />
+        </FormItem>
+        <FormItem label="Home Team">
+          <Select
+            value={team_one_id}
+            style={{ width: 200 }}
+            onChange={newId => {
+              updateTeamOneId(newId);
+            }}
+          >
+            {teams
+              .filter(({ id }) => id !== team_two_id)
+              .map(team => (
+                <Option value={team.id} key={team.id}>
+                  {team.name}
+                </Option>
+              ))}
+          </Select>
+        </FormItem>
+        <FormItem label="Home team goals">
+          <InputNumber
+            min={0}
+            value={team_one_goals}
+            style={{ width: 200 }}
+            onChange={newValue => {
+              newValue && isEntryValid(newValue)
+                ? updateTeamOneGoals(newValue)
+                : updateTeamOneGoals(0);
+            }}
+          />
+        </FormItem>
+        <FormItem label="Away Team">
+          <Select
+            value={team_two_id}
+            style={{ width: 200 }}
+            onChange={newId => {
+              updateTeamTwoId(newId);
+            }}
+          >
+            {teams
+              .filter(({ id }) => id !== team_one_id)
+              .map(team => (
+                <Option value={team.id} key={team.id}>
+                  {team.name}
+                </Option>
+              ))}
+          </Select>
+        </FormItem>
+        <FormItem label="Away team goals">
+          <InputNumber
+            min={0}
+            value={team_two_goals}
+            style={{ width: 200 }}
+            onChange={newValue => {
+              newValue && isEntryValid(newValue)
+                ? updateTeamOneGoals(newValue)
+                : updateTeamOneGoals(0);
+            }}
+          />
+        </FormItem>
+        <Button
+          type="primary"
+          htmlType="submit"
+          disabled={!(momentDate && team_one_id && team_two_id)}
         >
-          {teams
-            .filter(({ id }) => id !== team_two_id)
-            .map(team => (
-              <Option value={team.id} key={team.id}>
-                {team.name}
-              </Option>
-            ))}
-        </Select>
-      </FormItem>
-      <FormItem label="Home team goals">
-        <InputNumber
-          min={0}
-          value={team_one_goals}
-          style={{ width: 60 }}
-          onChange={newValue => {
-            newValue && isEntryValid(newValue)
-              ? updateTeamOneGoals(newValue)
-              : updateTeamOneGoals(0);
-          }}
-        />
-      </FormItem>
-      <FormItem label="Away Team">
-        <Select
-          value={team_two_id}
-          style={{ width: 200 }}
-          onChange={newId => {
-            updateTeamTwoId(newId);
-          }}
-        >
-          {teams
-            .filter(({ id }) => id !== team_one_id)
-            .map(team => (
-              <Option value={team.id} key={team.id}>
-                {team.name}
-              </Option>
-            ))}
-        </Select>
-      </FormItem>
-      <FormItem label="Away team goals">
-        <InputNumber
-          min={0}
-          value={team_two_goals}
-          style={{ width: 60 }}
-          onChange={newValue => {
-            newValue && isEntryValid(newValue)
-              ? updateTeamOneGoals(newValue)
-              : updateTeamOneGoals(0);
-          }}
-        />
-      </FormItem>
-      <Button
-        type="primary"
-        htmlType="submit"
-        disabled={!(momentDate && team_one_id && team_two_id)}
-      >
-        Submit
-      </Button>
-    </Form>
+          Submit
+        </Button>
+      </Form>
+    </Container>
   );
 };
 export default AddGame;

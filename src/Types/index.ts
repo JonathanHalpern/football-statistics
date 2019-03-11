@@ -13,6 +13,7 @@ export type Team = {
   id: string;
   logo_url: string;
   name: string;
+  points: number;
 };
 
 export type Player = {
@@ -46,4 +47,7 @@ export type AppContext = {
   teams: Team[];
   players: Player[];
   games: Game[];
+  loadingTeams: boolean;
+  loadingPlayers: boolean;
+  loadingGames: boolean;
 };

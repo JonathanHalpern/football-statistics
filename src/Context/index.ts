@@ -1,10 +1,14 @@
 import { createContext, useContext, useState } from "react";
 import { Player, Team, Game, Era, AppContext } from "../Types";
+import team from "../Components/team";
 
-const initialState: AppContext = {
+export const initialState: AppContext = {
   teams: [],
   players: [],
-  games: []
+  games: [],
+  loadingTeams: false,
+  loadingPlayers: false,
+  loadingGames: false
 };
 
 const Store = createContext<[AppContext, () => void]>([
@@ -20,14 +24,58 @@ export const useFetchAll = () => {
 const findTeamById = (teams: Team[], team_id: string) =>
   teams.find(({ id }) => team_id === id);
 
+const addPointsToTeams = (teams: Team[], games: Game[]) => {
+  const teamIdPointsMap = new Map();
+  teams.forEach(team => {
+    teamIdPointsMap.set(team.id, 0);
+  });
+  games.forEach(game => {
+    if (game.team_one_goals > game.team_two_goals) {
+      const newValue = teamIdPointsMap.get(game.team_one_id) + 3;
+      teamIdPointsMap.set(game.team_one_id, newValue);
+    } else if (game.team_one_goals < game.team_two_goals) {
+      const newValue = teamIdPointsMap.get(game.team_two_id) + 3;
+      teamIdPointsMap.set(game.team_two_id, newValue);
+    } else {
+      teamIdPointsMap.set(
+        game.team_one_id,
+        teamIdPointsMap.get(game.team_one_id) + 1
+      );
+      teamIdPointsMap.set(
+        game.team_two_id,
+        teamIdPointsMap.get(game.team_two_id) + 1
+      );
+    }
+  });
+  return teams.map(team => ({
+    ...team,
+    points: teamIdPointsMap.get(team.id)
+  }));
+};
+
+export const useLoadingTeams = () => {
+  const [{ loadingTeams }] = useContext(Store);
+  return loadingTeams;
+};
+
+export const useLoadingPlayers = () => {
+  const [{ loadingPlayers }] = useContext(Store);
+  return loadingPlayers;
+};
+
+export const useLoadingGames = () => {
+  const [{ loadingGames }] = useContext(Store);
+  return loadingGames;
+};
+
 export const useTeams = () => {
-  const [state] = useContext(Store);
-  return state.teams;
+  const [{ teams, games }] = useContext(Store);
+  return addPointsToTeams(teams, games);
 };
 
 export const useTeamById = (id: string) => {
-  const [state] = useContext(Store);
-  return state.teams.find((team: Team) => team.id === id);
+  const [{ teams }] = useContext(Store);
+  return teams.find((team: Team) => team.id === id);
 };
 
 export const usePlayerById = (id: string) => {

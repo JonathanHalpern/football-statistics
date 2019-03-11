@@ -24,19 +24,15 @@ const Header: FC<Props> = () => {
     <Wrapper title="Football Statistics">
       <Title>Football Statistics</Title>
 
-      <Menu mode="horizontal">
+      <Menu mode="horizontal" selectable={false}>
         <Menu.Item key="admin">
-          <Link to="/admin">
-            <Icon type="form" />
-            Admin
-          </Link>
+          <div>
+            <Link to="/admin">
+              <Icon type="form" />
+              Admin
+            </Link>
+          </div>
         </Menu.Item>
-        {/* <Menu.Item key="app">
-          <Link to="/">
-            <Icon type="appstore" />
-            All Teams
-          </Link>
-        </Menu.Item> */}
         <SubMenu
           title={
             <Link to="/">

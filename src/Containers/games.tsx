@@ -16,9 +16,8 @@ const columns = [
   },
   {
     title: "Result",
-    dataIndex: "result"
-    // sorter: (a: Game, b: Game) => (a.home > b.home ? 1 : -1)
-    // render: (text: string) => (isHome ? "Home" : "Away")
+    dataIndex: "result",
+    sorter: (a: Game, b: Game) => (a.result > b.result ? 1 : -1)
   },
   {
     title: "Venue",
