@@ -40,10 +40,6 @@ See the section about [running tests](https://facebook.github.io/create-react-ap
 
 ## Architectural decisions
 
-### Framework
-
-I chose to use React instead of VUE because I have more experience with this technology. I believe the end result would be very similar either way.
-
 ### Data
 
 I orginally made a fresh query to the API on each page, followed by a second query to get further information
