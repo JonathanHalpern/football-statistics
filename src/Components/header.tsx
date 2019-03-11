@@ -6,8 +6,6 @@ import { useTeams } from "../Hooks";
 
 const SubMenu = Menu.SubMenu;
 
-type Props = {};
-
 const Wrapper = styled.div`
   position: sticky;
   top: 0;
@@ -16,14 +14,15 @@ const Wrapper = styled.div`
   margin-bottom: 20px;
 `;
 
-const Title = styled.h1``;
-
-const Header: FC<Props> = () => {
+const Header: FC = () => {
   const teams = useTeams();
   return (
     <Wrapper title="Football Statistics">
-      <Title>Football Statistics</Title>
-      <a href="https://github.com/JonathanHalpern/football-statistics">
+      <h1>Football Statistics</h1>
+      <a
+        href="https://github.com/JonathanHalpern/football-statistics"
+        target="_blank"
+      >
         Coding exercise by Jonathan Halpern
       </a>
 
@@ -52,6 +51,14 @@ const Header: FC<Props> = () => {
             </Menu.Item>
           ))}
         </SubMenu>
+        <Menu.Item key="players">
+          <div>
+            <Link to="/players">
+              <Icon type="team" />
+              Players
+            </Link>
+          </div>
+        </Menu.Item>
       </Menu>
     </Wrapper>
   );

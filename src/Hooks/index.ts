@@ -1,6 +1,5 @@
-import { createContext, useContext, useState } from "react";
-import { Player, Team, Game, Era, AppContext } from "../Types";
-import team from "../Components/team";
+import { createContext, useContext } from "react";
+import { Player, Team, Game, AppContext } from "../Types";
 
 export const initialState: AppContext = {
   teams: [],
@@ -23,6 +22,15 @@ export const useFetchAll = () => {
 
 const findTeamById = (teams: Team[], team_id: string) =>
   teams.find(({ id }) => team_id === id);
+
+const addPlayersTeams = (players: Player[], teams: Team[]) =>
+  players.map(player => {
+    const team = findTeamById(teams, player.team_id);
+    return {
+      ...player,
+      team_name: team ? team.name : ""
+    };
+  });
 
 const addPointsToTeams = (teams: Team[], games: Game[]) => {
   const teamIdPointsMap = new Map();
@@ -109,14 +117,17 @@ export const usePlayerById = (id: string) => {
   }
 };
 
+export const usePlayers = () => {
+  const [{ players, teams }] = useContext(Store);
+  return addPlayersTeams(players, teams);
+};
+
 export const usePlayersByTeamId = (team_id: string) => {
   const [{ players, teams }] = useContext(Store);
-  return players
-    .filter(player => player.team_id === team_id)
-    .map(player => ({
-      ...player,
-      team: findTeamById(teams, player.id)
-    }));
+  return addPlayersTeams(
+    players.filter(player => player.team_id === team_id),
+    teams
+  );
 };
 
 export const useGamesByTeamId = (team_id: string) => {
@@ -159,6 +170,7 @@ export const useGamesByTeamId = (team_id: string) => {
       return {
         ...game,
         team_two_name: opposingTeam ? opposingTeam.name : "not found",
+        team_two_logo_url: opposingTeam ? opposingTeam.logo_url : "",
         result,
         points
       };
@@ -166,7 +178,5 @@ export const useGamesByTeamId = (team_id: string) => {
 };
 
 export const AppContextProvider = Store.Provider;
-
-export const AppContextConsumer = Store.Consumer;
 
 export default Store;

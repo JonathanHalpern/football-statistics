@@ -14,7 +14,6 @@ const TeamsPage: FC<RouteComponentProps<Props>> = ({ id = "" }) => {
   const isLoadingPlayers = useLoadingPlayers();
   const player = usePlayerById(id);
   useOnNewPage(player ? player.name : "");
-  console.log(isLoadingPlayers);
   if (isLoadingPlayers) return <Spin size="large" />;
   if (!player) return <p>Player not found</p>;
   return (

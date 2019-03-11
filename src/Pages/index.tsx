@@ -5,6 +5,7 @@ import NotFound from "./NotFound";
 import Teams from "./Teams";
 import Team from "./Team";
 import Player from "./Player";
+import Players from "./Players";
 import Admin from "./Admin";
 
 const Pages = () => (
@@ -12,7 +13,8 @@ const Pages = () => (
     <NotFound default />
     <Teams path="/" />
     <Team path="/team/:id" />
-    <Player path="/player/:id" />
+    <Player path="/players/:id" />
+    <Players path="/players" />
     <Admin path="/admin" />
   </Router>
 );

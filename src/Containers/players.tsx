@@ -12,24 +12,34 @@ const columns = [
       <NameWithLogo
         src={record.flag_url}
         teamName={record.name}
-        url={`/player/${record.id}`}
+        url={`/players/${record.id}`}
       />
-    )
+    ),
+    width: 300
+  },
+  {
+    title: "Team",
+    dataIndex: "team_name",
+    sorter: (a: Player, b: Player) => (a.team_name > b.team_name ? 1 : -1),
+    width: 150
   },
   {
     title: "Nationality",
     dataIndex: "nationality",
-    sorter: (a: Player, b: Player) => (a.nationality > b.nationality ? 1 : -1)
+    sorter: (a: Player, b: Player) => (a.nationality > b.nationality ? 1 : -1),
+    width: 150
   },
   {
     title: "Age",
     dataIndex: "age",
-    sorter: (a: Player, b: Player) => Number(a.age) - Number(b.age)
+    sorter: (a: Player, b: Player) => Number(a.age) - Number(b.age),
+    width: 100
   },
   {
     title: "Position",
     dataIndex: "position",
-    sorter: (a: Player, b: Player) => (a.position > b.position ? 1 : -1)
+    sorter: (a: Player, b: Player) => (a.position > b.position ? 1 : -1),
+    width: 100
   },
   {
     title: "Value",

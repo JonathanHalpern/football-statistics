@@ -37,6 +37,7 @@ export type Game = {
   team_one_goals: number;
   team_two_goals: number;
   team_two_name: string;
+  team_two_logo_url: string;
   date: string;
   home: boolean;
   result: string;

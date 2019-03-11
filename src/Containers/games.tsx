@@ -1,8 +1,7 @@
 import React, { FC } from "react";
 import Moment from "react-moment";
 import moment from "moment";
-import { Table } from "../Components";
-import { Link } from "@reach/router";
+import { Table, NameWithLogo } from "../Components";
 import { Game } from "../Types";
 
 const columns = [
@@ -11,7 +10,11 @@ const columns = [
     dataIndex: "team_two_name",
     sorter: (a: Game, b: Game) => (a.team_two_name > b.team_two_name ? 1 : -1),
     render: (text: string, record: Game) => (
-      <Link to={`/team/${record.team_two_id}`}>{record.team_two_name}</Link>
+      <NameWithLogo
+        src={record.team_two_logo_url}
+        teamName={record.team_two_name}
+        url={`/team/${record.team_two_id}`}
+      />
     )
   },
   {
