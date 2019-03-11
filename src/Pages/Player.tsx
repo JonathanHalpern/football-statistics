@@ -1,10 +1,10 @@
-import React, { FC, useEffect } from "react";
+import React, { FC } from "react";
 import { RouteComponentProps } from "@reach/router";
 import { Divider, Spin } from "antd";
 import { History } from "../Containers";
 import { Player } from "../Components";
 
-import { usePlayerById, useLoadingPlayers } from "../Context";
+import { usePlayerById, useLoadingPlayers, useOnNewPage } from "../Hooks";
 
 type Props = {
   id: string;
@@ -13,9 +13,7 @@ type Props = {
 const TeamsPage: FC<RouteComponentProps<Props>> = ({ id = "" }) => {
   const isLoadingPlayers = useLoadingPlayers();
   const player = usePlayerById(id);
-  useEffect(() => {
-    document.title = player ? player.name : "";
-  });
+  useOnNewPage(player ? player.name : "");
   console.log(isLoadingPlayers);
   if (isLoadingPlayers) return <Spin size="large" />;
   if (!player) return <p>Player not found</p>;

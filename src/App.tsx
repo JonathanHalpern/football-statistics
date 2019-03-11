@@ -4,7 +4,7 @@ import { Header } from "./Components";
 import Pages from "./Pages";
 import { message } from "antd";
 
-import { AppContextProvider } from "./Context";
+import { AppContextProvider } from "./Hooks";
 import { removeInvalidGames } from "./Utils";
 
 import { AppContext, Team, Player, Game } from "./Types";
@@ -19,15 +19,6 @@ export const initialState: AppContext = {
 };
 
 import "./App.css";
-
-// enum actions {
-//   SET_TEAMS = 'football-statistics/SET_TEAMS',
-//   SET_PLAYERS = 'football-statistics/SET_PLAYERS',
-//   SET_GAMES = 'football-statistics/SET_GAMES',
-//   SET_IS_LOADING_TEAMS = 'football-statistics/SET_IS_LOADING_TEAMS',
-//   SET_LOAD_PLAYERS = 'football-statistics/SET_LOAD_PLAYERS',
-//   SET_IS_LOADING_GAMES = 'football-statistics/SET_IS_LOADING_GAMES',
-// }
 
 type SetTeamsAction = {
   type: "SET_TEAMS";

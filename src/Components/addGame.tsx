@@ -1,7 +1,6 @@
 import React, { FC, useState, SyntheticEvent } from "react";
 import moment from "moment";
-import styled from "@emotion/styled";
-import { useFetchAll } from "../Context";
+import { useFetchAll } from "../Hooks";
 import { addAGame } from "../Api";
 import { Team } from "../Types";
 
@@ -13,12 +12,6 @@ const Option = Select.Option;
 type Props = {
   teams: Team[];
 };
-
-const Container = styled.div`
-  .ant-form-item-control-wrapper {
-    /* display: inline-block; */
-  }
-`;
 
 const formItemLayout = {
   labelCol: {
@@ -33,6 +26,7 @@ const formItemLayout = {
 
 const AddGame: FC<Props> = ({ teams }) => {
   const fetchAll = useFetchAll();
+  const [isLoading, setIsLoading] = useState(false);
   const [momentDate, updateMomentDate] = useState(moment());
   const [team_one_id, updateTeamOneId] = useState("");
   const [team_two_id, updateTeamTwoId] = useState("");
@@ -40,6 +34,7 @@ const AddGame: FC<Props> = ({ teams }) => {
   const [team_two_goals, updateTeamTwoGoals] = useState(0);
   const onSubmit = async (event: SyntheticEvent) => {
     event.preventDefault();
+    setIsLoading(true);
     const game = {
       date: momentDate.format(),
       team_one_id,
@@ -48,6 +43,7 @@ const AddGame: FC<Props> = ({ teams }) => {
       team_two_goals
     };
     const response = await addAGame(game);
+    setIsLoading(false);
     if (response.success) {
       fetchAll();
       updateTeamOneId("");
@@ -64,88 +60,86 @@ const AddGame: FC<Props> = ({ teams }) => {
   const disabledDate = (current: moment.Moment | undefined) =>
     current ? current.isAfter() : false;
   return (
-    <Container>
-      <Form layout="horizontal" onSubmit={onSubmit} {...formItemLayout}>
-        <h2>Add a new game</h2>
+    <Form layout="horizontal" onSubmit={onSubmit} {...formItemLayout}>
+      <h2>Add a new game</h2>
 
-        <FormItem label="Match Date">
-          <DatePicker
-            disabledDate={disabledDate}
-            value={momentDate}
-            style={{ width: 200 }}
-            onChange={newDate => {
-              (!newDate || (newDate && newDate.isSameOrBefore())) &&
-                updateMomentDate(newDate);
-            }}
-          />
-        </FormItem>
-        <FormItem label="Home Team">
-          <Select
-            value={team_one_id}
-            style={{ width: 200 }}
-            onChange={newId => {
-              updateTeamOneId(newId);
-            }}
-          >
-            {teams
-              .filter(({ id }) => id !== team_two_id)
-              .map(team => (
-                <Option value={team.id} key={team.id}>
-                  {team.name}
-                </Option>
-              ))}
-          </Select>
-        </FormItem>
-        <FormItem label="Home team goals">
-          <InputNumber
-            min={0}
-            value={team_one_goals}
-            style={{ width: 200 }}
-            onChange={newValue => {
-              newValue && isEntryValid(newValue)
-                ? updateTeamOneGoals(newValue)
-                : updateTeamOneGoals(0);
-            }}
-          />
-        </FormItem>
-        <FormItem label="Away Team">
-          <Select
-            value={team_two_id}
-            style={{ width: 200 }}
-            onChange={newId => {
-              updateTeamTwoId(newId);
-            }}
-          >
-            {teams
-              .filter(({ id }) => id !== team_one_id)
-              .map(team => (
-                <Option value={team.id} key={team.id}>
-                  {team.name}
-                </Option>
-              ))}
-          </Select>
-        </FormItem>
-        <FormItem label="Away team goals">
-          <InputNumber
-            min={0}
-            value={team_two_goals}
-            style={{ width: 200 }}
-            onChange={newValue => {
-              newValue && isEntryValid(newValue)
-                ? updateTeamOneGoals(newValue)
-                : updateTeamOneGoals(0);
-            }}
-          />
-        </FormItem>
-        <Button
-          type="primary"
-          htmlType="submit"
-          disabled={!(momentDate && team_one_id && team_two_id)}
+      <FormItem label="Match Date">
+        <DatePicker
+          disabledDate={disabledDate}
+          value={momentDate}
+          style={{ width: 200 }}
+          onChange={newDate => {
+            (!newDate || (newDate && newDate.isSameOrBefore())) &&
+              updateMomentDate(newDate);
+          }}
+        />
+      </FormItem>
+      <FormItem label="Home Team">
+        <Select
+          value={team_one_id}
+          style={{ width: 200 }}
+          onChange={newId => {
+            updateTeamOneId(newId);
+          }}
         >
-          Submit
-        </Button>
-      </Form>
-    </Container>
+          {teams
+            .filter(({ id }) => id !== team_two_id)
+            .map(team => (
+              <Option value={team.id} key={team.id}>
+                {team.name}
+              </Option>
+            ))}
+        </Select>
+      </FormItem>
+      <FormItem label="Home team goals">
+        <InputNumber
+          min={0}
+          value={team_one_goals}
+          style={{ width: 200 }}
+          onChange={newValue => {
+            newValue && isEntryValid(newValue)
+              ? updateTeamOneGoals(newValue)
+              : updateTeamOneGoals(0);
+          }}
+        />
+      </FormItem>
+      <FormItem label="Away Team">
+        <Select
+          value={team_two_id}
+          style={{ width: 200 }}
+          onChange={newId => {
+            updateTeamTwoId(newId);
+          }}
+        >
+          {teams
+            .filter(({ id }) => id !== team_one_id)
+            .map(team => (
+              <Option value={team.id} key={team.id}>
+                {team.name}
+              </Option>
+            ))}
+        </Select>
+      </FormItem>
+      <FormItem label="Away team goals">
+        <InputNumber
+          min={0}
+          value={team_two_goals}
+          style={{ width: 200 }}
+          onChange={newValue => {
+            newValue && isEntryValid(newValue)
+              ? updateTeamTwoGoals(newValue)
+              : updateTeamTwoGoals(0);
+          }}
+        />
+      </FormItem>
+      <Button
+        type="primary"
+        htmlType="submit"
+        disabled={isLoading || !(momentDate && team_one_id && team_two_id)}
+      >
+        {isLoading ? "Submitting" : "Submit"}
+      </Button>
+    </Form>
   );
 };
 export default AddGame;

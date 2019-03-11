@@ -17,6 +17,7 @@
     "react-dom": "^16.8.4",
     "react-moment": "^0.8.4",
     "react-scripts": "2.1.8",
+    "tinycolor2": "^1.4.1",
     "typescript": "^3.3.3333"
   },
   "scripts": {
@@ -35,6 +36,7 @@
     "not op_mini all"
   ],
   "devDependencies": {
-    "@types/reach__router": "^1.2.3"
+    "@types/reach__router": "^1.2.3",
+    "@types/tinycolor2": "^1.4.1"
   }
 }

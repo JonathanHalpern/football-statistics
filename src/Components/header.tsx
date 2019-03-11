@@ -2,7 +2,7 @@ import React, { FC } from "react";
 import { Menu, Icon } from "antd";
 import styled from "@emotion/styled";
 import { Link } from "@reach/router";
-import { useTeams } from "../Context";
+import { useTeams } from "../Hooks";
 
 const SubMenu = Menu.SubMenu;
 
@@ -23,6 +23,9 @@ const Header: FC<Props> = () => {
   return (
     <Wrapper title="Football Statistics">
       <Title>Football Statistics</Title>
+      <a href="https://github.com/JonathanHalpern/football-statistics">
+        Coding exercise by Jonathan Halpern
+      </a>
 
       <Menu mode="horizontal" selectable={false}>
         <Menu.Item key="admin">

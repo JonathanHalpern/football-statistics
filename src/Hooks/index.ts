@@ -53,6 +53,11 @@ const addPointsToTeams = (teams: Team[], games: Game[]) => {
   }));
 };
 
+export const useOnNewPage = (title: string) => {
+  document.title = title;
+  window.scrollTo(0, 0);
+};
+
 export const useLoadingTeams = () => {
   const [{ loadingTeams }] = useContext(Store);
   return loadingTeams;

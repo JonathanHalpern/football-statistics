@@ -1,5 +1,6 @@
 import React, { FC } from "react";
 import styled from "@emotion/styled";
+import tinyolor from "tinycolor2";
 import { Team } from "../Types";
 import { Currency } from "../Components";
 
@@ -28,7 +29,8 @@ const Container = styled.div<ContainerType>`
   position: relative;
   max-width: 380px;
   margin: auto;
-  border: 1px solid ${({ borderColour }) => borderColour};
+  border: 1px solid
+    ${({ borderColour }) => `${tinyolor(borderColour).toHexString()}`};
   border-radius: 20px;
 `;
 
